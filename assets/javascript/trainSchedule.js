@@ -1,9 +1,4 @@
 
-
-
-
-
-  // Initialize Firebase
   var config = {
     apiKey: "AIzaSyBB7-HCnEi21ox3JuxWgjIHCmfFnUgPGBI",
     authDomain: "train-schedule-66db2.firebaseapp.com",
@@ -19,13 +14,11 @@
 
 $("#addTrain-btn").on("click", function(event) {   
 
-   // Grabs user input
-    var trnName = $(".trainName").val().trim();
-    var trnDest = $(".trainDestination").val().trim();
-    var trnStart = moment($(".trainFirstTime").val().trim(), "HH:mm").format("HH:mm");
-    var trnFreq = $(".trainFrequency").val().trim();
+    var trnName = $("#trainName").val().trim();
+    var trnDest = $("#trainDestination").val().trim();
+    var trnStart = moment($("#trainFirstTime").val().trim(), "HH:mm").format("HH:mm");
+    var trnFreq = $("#trainFrequency").val().trim();
 
-    // Creates local "temporary" object for holding employee data
     var newTrain = {
       route: trnName,
       dest: trnDest,
@@ -33,59 +26,53 @@ $("#addTrain-btn").on("click", function(event) {
       freq: trnFreq
     };
 
-    // Uploads train data to the database
     database.ref().push(newTrain);
 
-    // Logs everything to console
-    console.log(newTrain.route);
-    console.log(newTrain.dest);
-    console.log(newTrain.start);
-    console.log(newTrain.freq);
+    $("#trainName").val("");
+    $("#trainDestination").val("");
+    $("#trainFirstTime").val("");
+    $("#trainFrequency").val("");
 
-  // Alert
-    alert("Train successfully added");
-
-    // input value
-    $(".trainName").val("");
-    $(".trainDestination").val("");
-    $(".trainFirstTime").val("");
-    $(".trainFrequency").val("");
-
-    // Prevents moving to new page
+    
     return false;
 });
 
 
 database.ref().on("child_added", function(childSnapshot, prevChildKey) {
 
-  console.log(childSnapshot.val());
+    // var trnNext = new Date();
+    // var trnWait = "tbd";
+    // var today = new Date();
+    
+    var trnName = childSnapshot.val().name;
+    var trnName = childSnapshot.val().route;
+    var trnDest = childSnapshot.val().dest;
+    var trnStart = childSnapshot.val().start
+    var trnFreq = childSnapshot.val().freq;
+    var trnNext = nextTrainCalc(trnStart, trnFreq);
+    var trnWait = waitTrainCalc(trnNext);    
 
-  // Store everything into a variable.
-  var trnName = childSnapshot.val().name;
-  debugger;
-
-  var trnName = childSnapshot.val().route;
-  var trnDest = childSnapshot.val().dest
-  var trnStart = childSnapshot.val().start;
-  var trnFreq = childSnapshot.val().freq;
-
-  // Employee Info
-  console.log(trnName);
-  console.log(trnDest);
-  console.log(trnStart);
-  console.log(trnFreq);
-
-  // // Prettify the employee start
-  // var empStartPretty = moment.unix(empStart).format("MM/DD/YY");
-
- 
-
-  // Add each train's data into the table
-  $("#trainTable > tbody").append("<tr><td>" + trnName + "</td><td>" + trnDest + "</td><td>" +
-  trnFreq + "</td><td>" + "?? must calc" + "</td><td>" + "?? must calc ??" + "</td></tr>");
+    $("#trainTable > tbody").append("<tr><td>" + trnName + "</td><td>" + trnDest + "</td><td>" + trnStart + "</td><td>" + trnFreq + "</td><td>" + trnNext + "</td><td>" + trnWait + "</td></tr>");
 });
 
 
+function nextTrainCalc(firstTrain, scheduled) {
 
+  var checkNext = moment(firstTrain,"HH:mm");
+  var g = Number(scheduled);
+  var trnGap = moment.duration(g, "m");
 
+  var i = 0;
+  do {
+    if (checkNext.isSameOrAfter()) {
+      return(moment(checkNext).format("HH:mm"))
+    }
+    checkNext.add(trnGap, "m");
+  } while (i < 5);   // make an infinite loop
+  
+}
 
+function waitTrainCalc(waiting) {
+
+  return("??")
+}

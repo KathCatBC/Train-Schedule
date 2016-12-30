@@ -10,8 +10,6 @@
 
   var database = firebase.database();
 
-
-
 $("#addTrain-btn").on("click", function(event) {   
 
     var trnName = $("#trainName").val().trim();
@@ -40,10 +38,6 @@ $("#addTrain-btn").on("click", function(event) {
 
 database.ref().on("child_added", function(childSnapshot, prevChildKey) {
 
-    // var trnNext = new Date();
-    // var trnWait = "tbd";
-    // var today = new Date();
-    
     var trnName = childSnapshot.val().name;
     var trnName = childSnapshot.val().route;
     var trnDest = childSnapshot.val().dest;
@@ -63,6 +57,7 @@ function nextTrainCalc(firstTrain, scheduled) {
   var trnGap = moment.duration(g, "m");
 
   var i = 0;
+
   do {
     if (checkNext.isSameOrAfter()) {  // () returns now
       return(moment(checkNext).format("HH:mm"))
@@ -82,14 +77,7 @@ function waitTrainCalc(waiting) {
   var nowHr = Number(now.substr(0,2));
   var nowMin = Number(now.substr(3,2));
 
-
   var waiting = (((trnHr*60) + trnMin)-((nowHr*60) + nowMin))
-  // var d = ((trnHr*60) + trnMin);
- 
-  // var e = ((nowHr*60) + nowMin);
-  // console.log("now hr in min" + e);
-  // var f = d - e;
-  // console.log("time until train   = " + f)
 
   return(waiting)
 }

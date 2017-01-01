@@ -31,10 +31,8 @@ $("#addTrain-btn").on("click", function(event) {
     $("#trainFirstTime").val("");
     $("#trainFrequency").val("");
 
-    
     return false;
 });
-
 
 database.ref().on("child_added", function(childSnapshot, prevChildKey) {
 
@@ -48,7 +46,6 @@ database.ref().on("child_added", function(childSnapshot, prevChildKey) {
 
     $("#trainTable > tbody").append("<tr><td>" + trnName + "</td><td>" + trnDest + "</td><td>" + trnStart + "</td><td>" + trnFreq + "</td><td>" + trnNext + "</td><td>" + trnWait + "</td></tr>");
 });
-
 
 function nextTrainCalc(firstTrain, scheduled) {
 
